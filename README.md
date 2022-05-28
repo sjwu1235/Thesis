@@ -12,7 +12,7 @@ This repository contains five notebooks, each of which is used to clean the mast
 Assumptions:
 
 - Python has been installed
-- Jupyter notebook is installed or extensions in VS code are enabled to read .ipynb files.*
+- Jupyter notebook is installed or extensions in VS code are enabled to read .ipynb files.
 
 __Note: Follow [this article](https://betterprogramming.pub/install-jupyter-notebooks-without-anaconda-5a19ac20bae2) to install jupyter notebook without anaconda.__
 
