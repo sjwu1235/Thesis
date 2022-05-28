@@ -20,15 +20,18 @@ To generate a cleaned masterlist:
 
 - Go to a prompt (CMD in Windows) and type jupyter notebook and navigate to the .ipynb file
 - In the first two code blocks change the file path to a local path such that it points to the correct excel files needed for processing
-- Follow the instructions in the first two blocks - change the file paths to your own local path.
+- Follow the instructions in the first two blocks - change the file paths to your own local path (see image below).
 - Ensure that the file paths are pointing to the right files.
 - Download [masterlists](https://drive.google.com/drive/folders/1bqs01QcpYeS-wi1jYrrnXkE0GsINqYLs), [pivot lists](https://drive.google.com/drive/folders/1nmxCa9po1drhWBoMOxi1660XI3FzElEf) and [scopus data](https://drive.google.com/drive/folders/1qh9XNus41zYXlSVwMzqNoERtXG16EKp3) of each journal by following their respective hyperlinks.**
-![image](https://user-images.githubusercontent.com/80747408/170804396-ecae0072-c363-4e8d-94c8-fc5a9334b826.png)
+
+![image](https://user-images.githubusercontent.com/80747408/170805388-00cce929-12e8-46ee-ac13-930c6148ecf9.png)
+
 
 ** ignore datadumpts for now
 
 ## General cleaning procedure
 This is an overview of how the each article was categorized. The assumption is that all data without author names must be miscellaneous documents like reports by the committee, forewords, front matters etc.. The goal of this notebook is to check for certain that all the documents without author names are actually miscellaneous documents and then classify them as miscellaneous (MISC). Hence, first we group everything the data by title to see the repetitive general content that can likely be removed.
+
 ![image](https://user-images.githubusercontent.com/80747408/170804726-2cc3ec48-d4cb-4d5f-99ef-ac71696c4702.png)
 
 The duplicates above a certain count are classified as miscellaneous and then regex pattern matching is used for less consistent repetitions eg: titles of AGM documents with changing years. Some individual errors such as missing author names are corrected if found during this phase.
