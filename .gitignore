@@ -1,0 +1,6 @@
+.ipynb_checkpoints
+/env
+/*.csv
+/*.xlsx
+./.ipynb_checkpoints
+.csv

@@ -1,0 +1,72 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<div style="display:flex; flex-direction:row;">
+    <iframe src=${pdf_url} style="flex: 1; height:700px; width:700px;"> 
+    </iframe>
+    <crowd-form answer-format="flatten-objects" style="flex:1">
+        
+      <crowd-instructions link-text="View instructions" link-type="button">
+        <short-summary>
+          <p>The following task is for counting tables and figures in a journal article.</p>
+        </short-summary>
+    
+        <detailed-instructions>
+          <h3>Detailed instructions</h3>
+          <ul>
+              <li>Count the number of tables and figures in the pdf: this includes tables and figures found in the footnotes.</li>
+              <li>Figures may take the form of graphs, scatterplots, drawings, maps, photographs, diagrams, etc. Figures, are usually titled, and/or accompanied with captions.</li>
+              <li>A table contains information (or data), typically in rows and columns. In other words, tables arrange information in a tabular form.</li>
+              <li>Refer to the slides for detailed instructions and examples, below is a screenshot of some examples</li>
+              INSERT SCREENSHOT OF EXAMPLE SLIDES
+          </ul>
+          <br>
+        </detailed-instructions>
+      </crowd-instructions>
+        <div style="display:flex; flex-direction:row">
+            <div style="padding-left:30px; padding-bottom:10px; flex-grow:1">
+              <div>
+                <p>This is <strong>${title}</strong> by authors <strong>${authors}</strong>, volume ${vol}, issue ${issue}, ${journal}</p>
+                </br>
+                <p><strong>Instructions: </strong>
+                    <ul>
+                        <li>Please count the number of tables and figures in the pdf. If none, enter '0'.</li>
+                        <li>Refer to the instructions tab for more details</li>
+                    </ul>
+                </p>
+                </b>
+                Enter the number of Tables:
+                </br>
+                <input name="tb_count" id="tb" style="padding: 10px; margin:10px 0; border: 2px solid;  border-radius:10px;  box-shadow:0 0 15px 4px rgba(0,0,0,0.06); width:300px" ></input>
+                </br>
+                Enter the number of Figures:
+                </br>
+                <input name="fg_count" id="fg" style="padding: 10px; margin:10px 0; border: 2px solid;  border-radius:10px;  box-shadow:0 0 15px 4px rgba(0,0,0,0.06); width:300px" ></input>
+                </br>
+              </div>
+            </div>
+        </div>
+    </crowd-form>
+</div>
+<script>
+    document.querySelector('crowd-form').onsubmit = function(e ) {
+        if (!validateForm()) {
+            e.preventDefault();
+            alert('Non-numerical character has been entered, please fix it')
+        }
+    }
+    function validateForm(){
+        let val=document.getElementById('tb').value
+        let isnum = /^\d+$/.test(val);
+        let val2=document.getElementById('fg').value
+        let isnum2 = /^\d+$/.test(val2);
+        console.log(isnum&isnum2)
+        return isnum&isnum2
+    }
+    
+    
+</script>

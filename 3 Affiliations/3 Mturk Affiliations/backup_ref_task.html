@@ -1,0 +1,177 @@
+<!-- You must include this JavaScript file -->
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!-- You must include crowd-form so that your task submits answers to MTurk -->
+<div style="display:flex; flex-direction:row; min-height: 900px;">
+    <iframe src=${pdf_url} style="width:600px;">
+        ${year}
+    </iframe>
+    <crowd-form answer-format="flatten-objects" style="width:600px;">
+        
+      <crowd-instructions link-text="View instructions" link-type="button">
+        <short-summary>
+          <p>The following task is for recording the footnotes of an academic journal article</p>
+        </short-summary>
+        
+        <detailed-instructions>
+          <h3>Detailed instructions</h3>
+          <p>Please record the citations or references in footnotes - this should be at the end of each page</p>
+          <p>There may be several references in the footnotes, please record each in it's own block</p>
+          <p>If there are no references in the footnotes, please select "None".</p>
+          <p>If there is a section title of Reference, please select "Reference list".</p>
+          <p>If you see a footnote in which a reference has been partially cut-off, .</p>
+          <br>
+          <p><strong>Recognizing references.</strong></p>
+          <p>We expect three types of references, please select a type and then fill in the reference information: </p>
+          <p><strong>Article</strong>: This could be of the form: Author(s),"article title," <i>journal</i>, Volume no., issue?, Year published, pages</p>
+          <p><strong>Book</strong>: This could be of the form: Author(s), "chapter title", <i>Book title</i> , (City:) Publisher, Year published</p>
+          <p><strong>Other</strong>: This is for references that do not fit any of the formats above. Please record the author, title and year and the full text of the reference.</p>
+          <p>Note: if the reference seems like an article reference but is missing the "issue" field. Please see the examples in the slides.</p>
+          <p>If you really cannot classify the reference as either Book or Article, please capture it as Other.</p>
+          <br>
+        </detailed-instructions>
+        
+      </crowd-instructions>
+        <p><strong>This task is part of training.</strong></p>
+        <p><strong>Please read the detailed instructions and examples carefully.</strong></p>
+        <p>ID <strong>${ID}</strong>: This is page <strong>${page}</strong> of <strong>${title}</strong> by authors <strong>${authors}</strong>, volume ${vol}, issue ${issue}, ${journal}, (${year})</p>
+        Cut-off citation present: <input type="checkbox" name="cutoff">
+        </br>
+        </br>
+        <div>
+            <div style="padding-left:30px; padding-bottom:10px; display: flex; overflow-x: scroll; min-height:600px;" id="container">
+            </div>
+        </div>
+        <!--<span class="textarea" role="textbox" style="display: block; width: 100%; overflow: hidden; resize: both; min-height: 40px;line-height: 20px; padding: 5px; margin:10px 0; border: 1px solid;  border-radius:10px;" contenteditable></span></p>-->
+        <p><crowd-button form-action="submit" style="border-radius:10px">Submit</crowd-button></p>
+    </crowd-form>
+</div>
+<script>
+    var style="padding: 5px 5px; margin:5px 0; border: 2px solid #eee;  border-radius:10px;  box-shadow:0 0 15px 4px rgba(0,0,0,0.06); width:250px;"
+    var but_style="padding: 5px; margin:10px 0; border: 1px solid;  border-radius:10px;  box-shadow:0 0 15px 4px rgba(0,0,0,0.06); width:30px"
+    var index_holder=[0]
+    var i=0
+    var div=document.createElement('div');
+    div.setAttribute("id","Div_"+i);
+    div.setAttribute("style", "width:400px; padding-right:40px;")
+    var text=''
+    text=text+'<fieldset><legend>Select a reference type:</legend>'
+    text=text+'<div><input type="radio" id="ref.'+i+'" onclick="none(this.id)" name="ref'+i+'" value="1" checked><label for="ref'+i+'">None</label></div>'
+    text=text+'<div><input type="radio" id="ref.'+i+'" onclick="reference(this.id)" name="ref'+i+'" value="5"><label for="ref'+i+'">References list found</label></div>'
+    text=text+'<div><input type="radio" id="ref.'+i+'" onclick="article(this.id)" name="ref'+i+'" value="2" checked><label for="ref'+i+'">Article</label></div>'        
+    text=text+'<div><input type="radio" id="ref.'+i+'" onclick="book(this.id)" name="ref'+i+'" value="3"><label for="ref'+i+'">Book</label></div>'
+    text=text+'<div><input type="radio" id="ref.'+i+'" onclick="other(this.id)" name="ref'+i+'" value="4"><label for="ref'+i+'">Other</label></div>'
+    text=text+'<div id="holder_'+i+'"></div>'
+    text=text+'<input type="button" name="button" id="'+i+'" style="'+but_style+'" onclick="addkid(this.id)" value="+"/>'
+    text=text+'</fieldset>'
+    div.innerHTML=text
+    document.getElementById('container').appendChild(div);
+    article('ref.0')
+    console.log(index_holder)
+    
+    function none(ind){
+        var div = document.getElementById("holder_"+ind.split('.')[1]);
+        div.innerHTML=""
+    }
+    
+    function reference(ind){
+        var div = document.getElementById("holder_"+ind.split('.')[1]);
+        div.innerHTML=""
+    }
+    
+    function article(ind){
+        var diva = document.getElementById("holder_"+ind.split('.')[1]);
+        tex=""
+        tex=tex+'<p id="p_'+ind+'_author" style="width:400px">Author(s): <input type="text" id="'+ind+'_author" style="'+style+'" name="'+ind+'_author" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_title">Title: <input type="text" id="'+ind+'_title" style="'+style+'" name="'+ind+'_title" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_journal">Journal: <input type="text" id="'+ind+'_journal" style="'+style+'" name="'+ind+'_journal" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_vol">Volume: <input type="text" id="'+ind+'vol" style="'+style+'" name="'+ind+'_vol" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_issue">Issue: <input type="text" id="'+ind+'issue" style="'+style+'" name="'+ind+'_issue" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_year">Published year: <input type="text" id="'+ind+'_year" style="'+style+'" name="'+ind+'_year" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_pages">Pages: <input type="text" id="'+ind+'_pages" style="'+style+'" name="'+ind+'_pages" required></input></p>'
+        diva.innerHTML=tex
+    }
+    
+    function book(ind){
+        var divb = document.getElementById("holder_"+ind.split('.')[1]);
+        tex=""
+        tex=tex+'<p id="p_'+ind+'_author" style="width:400px">Author(s): <input type="text" id="'+ind+'_author" style="'+style+'" name="'+ind+'_author" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_title">Book Title: <input type="text" id="'+ind+'_title" style="'+style+'" name="'+ind+'_title" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_chapter_title">Chapter title: <input type="text" id="'+ind+'_chapter_title" style="'+style+'" name="'+ind+'_chapter_title" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_vol">Volume: <input type="text" id="'+ind+'vol" style="'+style+'" name="'+ind+'_vol" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_publisher">Publisher: <input type="text" id="'+ind+'_publisher" style="'+style+'" name="'+ind+'_publisher" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_location">Location: <input type="text" id="'+ind+'_location" style="'+style+'" name="'+ind+'_location" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_year">Published year: <input type="text" id="'+ind+'_year" style="'+style+'" name="'+ind+'_year" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_pages">Pages: <input type="text" id="'+ind+'_pages" style="'+style+'" name="'+ind+'_pages" required></input></p>'
+        divb.innerHTML=tex
+    }
+    
+    function other(ind){
+        console.log(ind)
+        
+        var divo = document.getElementById("holder_"+ind.split('.')[1]);
+        tex=""
+        tex=tex+'<p id="p_'+ind+'_author" style="width:400px">Author(s): <input type="text" id="'+ind+'_author" style="'+style+'" name="'+ind+'_author" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_title">Title: <input type="text" id="'+ind+'_title" style="'+style+'" name="'+ind+'_title" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_year">Published year: <input type="text" id="'+ind+'_year" style="'+style+'" name="'+ind+'_year" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_publish">publisher: <input type="text" id="'+ind+'_textfull" style="'+style+'" name="'+ind+'_publisher" required></input></p>'
+        tex=tex+'<p id="p_'+ind+'_textfull">Full text: <input type="text" id="'+ind+'_textfull" style="'+style+'" name="'+ind+'_textfull" required></input></p>'
+        divo.innerHTML=tex
+    }
+
+    
+    function addkid(check) {
+        var div = document.createElement('div');
+        console.log(check)
+        var id =getID(check);
+        
+        // Set this attritube id so that we can access this element using Id 
+        div.setAttribute("id","Div_"+id);
+        div.setAttribute("style", "width:400px; padding-right:40px;")
+        var text=''
+        text=text+'<fieldset><legend>Select a reference type:</legend>'
+        text=text+'<div><input type="radio" id="ref.'+id+'" onclick="none(this.id)" name="'+id+'" value="1" checked><label for="ref'+id+'">None</label></div>'
+        text=text+'<div><input type="radio" id="ref.'+id+'" onclick="reference(this.id)" name="ref'+id+'" value="5"><label for="ref'+id+'">References list found</label></div>'
+        text=text+'<div><input type="radio" id="ref.'+id+'" onclick="article(this.id)" name="'+id+'" value="2" checked><label for="ref'+id+'">Article</label></div>'        
+        text=text+'<div><input type="radio" id="ref.'+id+'" onclick="book(this.id)" name="'+id+'" value="3"><label for="ref'+id+'">Book</label></div>'
+        text=text+'<div><input type="radio" id="ref.'+id+'" onclick="other(this.id)" name="'+id+'" value="4"><label for="ref'+id+'">Other</label></div>'
+        text=text+'<div id="holder_'+id+'"></div>'
+        text=text+'<input type="button" name="button" id="'+id+'" style="'+but_style+'" onclick="addkid(this.id)" value="+"/>'
+        text=text+' <input type="button" name="button" id="rem_kid()_' + id + '" style="'+but_style+'" onclick="remkid('+id+')" value="-" />';
+        text=text+'</fieldset>'
+        div.innerHTML=text
+        // inside of passing this parameter in remkid we pass id number
+        console.log(id)
+        document.getElementById('container').appendChild(div);
+        article('ref.'+id)
+    }
+ 
+    function remkid(i) {
+    // use the id arugment to get the div element using unique id set in addkid
+      try{
+        var element = document.getElementById("Div_"+i)
+        element.parentNode.removeChild(element);
+        index_holder[i] = -1;
+        //id number is = index of the array so we set to -1 to indicate its empty
+        }
+      catch(err){
+        alert("id: Div_"+i)
+        alert(err)
+        
+        }
+    }  
+    function getID(i){
+       var emptyIndex = index_holder.indexOf(-1);
+       if (emptyIndex != -1){
+         index_holder[emptyIndex] = emptyIndex
+         return emptyIndex
+       } else {
+       emptyIndex = index_holder.length
+       index_holder.push(emptyIndex)
+       return emptyIndex
+         }
+       }
+</script>
