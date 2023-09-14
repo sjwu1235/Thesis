@@ -29,14 +29,14 @@ from pathlib import Path
 count=0
 
 # inputs: change accordingly
-journal=pd.read_csv(Path('progress_qje.csv'))
+journal=pd.read_csv(Path('tb_pp.csv'))
 path=Path('D:\docs\Masters\Data')
 #year=1946
 #ofile_name='abc'+str(year)+'.csv'
 
 # alternative using year range
-year=[1940, 1976]
-ofile_name='qje_ex_none'+str(year[0])+'_'+str(year[1])+'.csv'
+year=[1940, 1990]
+ofile_name='tb_pp'+str(year[0])+'_'+str(year[1])+'.csv'
 
 existing=pd.DataFrame(columns = ['pdf_url', 'year', 'journal', 'Answer', 'id', 'page'])
 convert_dict = {'pdf_url': str,
@@ -65,7 +65,7 @@ start=time.time()
 journal['id']=journal['pdf_url'].str.split('/').str[-1].str.split('_').str[0]
 journal['journal']=journal['pdf_url'].str.split('/').str[-2].str.split('_').str[0]
 journal['page']=journal['pdf_url'].str.split('/').str[-1].str.split('-').str[-1].str.split('.').str[0].astype(int)
-journal['fp']=path/journal['pdf_url'].str.split('amazonaws.com/').str[-1].str[:-1]
+journal['fp']=path/(journal['pdf_url'].str.split('amazonaws.com/').str[-1].str.split(".").str[0] +".pdf")
 
 
 ids=pd.DataFrame(journal[['id','year']].value_counts()).sort_values('year', ascending=True)
