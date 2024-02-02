@@ -1,12 +1,13 @@
 .ipynb_checkpoints
 /env
-/*.csv
-/*.xlsx
-./.ipynb_checkpoints
+**/*.csv
+**/*.xlsx
+**/*.ipynb_checkpoints
 .csv
 /Data
 .DS_Store
 /lib
 .gexf
-/* recon.gexf
+**/*.gexf
 .json
+**/*.json
